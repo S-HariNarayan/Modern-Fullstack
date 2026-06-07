@@ -113,7 +113,7 @@ const defaultProducts = [
     description: 'Glossy purple eggplants (brinjals) with a tender texture when cooked.',
     price: 45,
     category: 'Vegetables',
-    image: 'https://www.treehugger.com/thmb/K0v7mj-MTjEpIENA1hyCoFcfCOk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__mnn__images__2018__06__eggplant-3e0f0e053ba4479d864b97d5c8a2b762.jpg',
+    image: 'https://images.unsplash.com/photo-1683543122945-513029986574?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWdncGxhbnR8ZW58MHx8MHx8fDA%3D',
     stock: 60
   },
   {
@@ -121,7 +121,7 @@ const defaultProducts = [
     description: 'Earthy button mushrooms, fresh and ready for sautéing or soups.',
     price: 110,
     category: 'Vegetables',
-    image: 'https://www.seriouseats.com/thmb/1ANo7Ajtt3ZyxbvGUTSBMLCIoQU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20251117-SEA-StoringMushrooms-IrvinLin-03-cd78e95a6f594970991a44b01a00bcd6.jpg',
+    image: 'https://plus.unsplash.com/premium_photo-1674575415644-3dcf6b288855?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fHw%3D',
     stock: 45
   },
   {
