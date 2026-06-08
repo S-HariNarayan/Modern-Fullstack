@@ -81,7 +81,7 @@ export default function Header() {
     // Dispatch event to clear cart badges elsewhere
     window.dispatchEvent(new Event('cartUpdated'));
     alert('Logged out successfully');
-    navigate('/login');
+    navigate('/');
   };
 
   if (!user) {
