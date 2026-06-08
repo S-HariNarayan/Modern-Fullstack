@@ -54,8 +54,8 @@ export default function Footer() {
         <div className={styles.footerColumn}>
           <h3 className={styles.columnTitle}>Support</h3>
           <ul className={styles.linkList}>
-            <li><Link to="/about">FAQ</Link></li>
-            <li><Link to="/about">Contact Us</Link></li>
+            <li><Link to="/faq">FAQ</Link></li>
+            <li><Link to="/contact">Contact Us</Link></li>
             <li><Link to="/privacy-policy">Privacy Policy</Link></li>
             <li><Link to="/terms-and-conditions">Terms & Conditions</Link></li>
           </ul>

@@ -133,6 +133,8 @@ export default function Header() {
                   <Link to="/cart" className={styles.dropdownItem}>🛒 Cart</Link>
                   <Link to="/profile" className={styles.dropdownItem}>👤 Profile</Link>
                   <Link to="/privacy-policy" className={styles.dropdownItem}>🔒 Privacy Policy</Link>
+                  <Link to="/faq" className={styles.dropdownItem}>❓ FAQ</Link>
+                  <Link to="/contact" className={styles.dropdownItem}>📞 Contact Us</Link>
                   <hr className={styles.divider} />
                   <Link to="/login" className={styles.dropdownItem}>🔑 Login</Link>
                   <Link to="/signup" className={styles.dropdownItem}>📝 Register</Link>
@@ -190,6 +192,8 @@ export default function Header() {
                 <Link to="/cart" className={styles.dropdownItem}>🛒 Cart {cartCount > 0 && `(${cartCount})`}</Link>
                 <Link to="/profile" className={styles.dropdownItem}>👤 Profile</Link>
                 <Link to="/privacy-policy" className={styles.dropdownItem}>🔒 Privacy Policy</Link>
+                <Link to="/faq" className={styles.dropdownItem}>❓ FAQ</Link>
+                <Link to="/contact" className={styles.dropdownItem}>📞 Contact Us</Link>
                 {user.isAdmin && (
                   <>
                     <hr className={styles.divider} />
