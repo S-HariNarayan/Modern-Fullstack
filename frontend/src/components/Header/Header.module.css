@@ -298,12 +298,14 @@
     display: none;
   }
   .navLinks ul li:has(.themeToggleBtn),
-  .navLinks ul li.menuContainer {
+  .navLinks ul li.menuContainer,
+  .navLinks ul li.profileContainer {
     display: block;
   }
-  .dropdownMenu {
+  .dropdownMenu,
+  .profileDropdownMenu {
     right: -10px;
-    min-width: 190px;
+    min-width: 195px;
   }
 }
 
