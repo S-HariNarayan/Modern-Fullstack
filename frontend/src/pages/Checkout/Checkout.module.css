@@ -189,3 +189,22 @@
   cursor: not-allowed;
   box-shadow: none;
 }
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 25px 15px;
+  }
+  .title {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+  .formSection {
+    min-width: 100%;
+    padding: 25px;
+  }
+  .summarySection {
+    min-width: 100%;
+    padding: 25px;
+  }
+}
+

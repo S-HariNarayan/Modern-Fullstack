@@ -237,3 +237,43 @@
   font-size: 15px;
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 20px 15px;
+  }
+  .productDetailContainer {
+    flex-direction: column;
+  }
+  .imageSection {
+    min-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-glow);
+    max-height: 300px;
+  }
+  .infoSection {
+    min-width: 100%;
+    padding: 25px;
+  }
+  .infoSection h2 {
+    font-size: 28px;
+  }
+  .price {
+    font-size: 26px;
+  }
+  .description {
+    font-size: 15px;
+  }
+  .cartBtn {
+    width: 100%;
+    align-self: stretch;
+    text-align: center;
+  }
+  .reviewsSection {
+    padding: 25px;
+  }
+  .reviewsSection h3 {
+    font-size: 20px;
+  }
+}
+

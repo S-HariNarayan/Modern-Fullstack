@@ -233,3 +233,15 @@ body[data-theme="original"] .themeToggleBtn:hover {
 body[data-theme="original"] .themeIcon {
   stroke: #2e7d32;
 }
+
+@media (max-width: 768px) {
+  .loginContainer {
+    width: 90%;
+    padding: 30px 20px;
+  }
+  .themeToggleContainer {
+    top: 15px;
+    right: 15px;
+  }
+}
+

@@ -278,3 +278,32 @@
   background: rgba(255, 82, 82, 0.1) !important;
   color: #ff5252 !important;
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 15px;
+  }
+  .logo img {
+    width: 120px;
+    height: 38px;
+    margin-right: 8px;
+  }
+  .logo h1 {
+    font-size: 20px;
+  }
+  .navLinks ul {
+    gap: 12px;
+  }
+  .navLinks ul li {
+    display: none;
+  }
+  .navLinks ul li:has(.themeToggleBtn),
+  .navLinks ul li.menuContainer {
+    display: block;
+  }
+  .dropdownMenu {
+    right: -10px;
+    min-width: 190px;
+  }
+}
+

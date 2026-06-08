@@ -80,3 +80,22 @@
 .section ul li {
   margin-bottom: 8px;
 }
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 30px 15px;
+  }
+  .title {
+    font-size: 28px;
+  }
+  .card {
+    padding: 25px 15px;
+  }
+  .section h2 {
+    font-size: 18px;
+  }
+  .section p, .section ul {
+    font-size: 14px;
+  }
+}
+

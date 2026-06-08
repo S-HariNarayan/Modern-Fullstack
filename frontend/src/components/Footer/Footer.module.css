@@ -172,6 +172,21 @@
     padding: 40px 20px 20px 20px;
   }
   .footerGrid {
+    grid-template-columns: 1fr;
     gap: 30px;
+    text-align: center;
+  }
+  .brandContainer {
+    justify-content: center;
+  }
+  .socialContainer {
+    justify-content: center;
+  }
+  .columnTitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .contactList li {
+    justify-content: center;
   }
 }

@@ -397,3 +397,29 @@
   background: rgba(231, 76, 60, 0.1);
 }
 
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 25px 15px;
+  }
+  .layout {
+    flex-direction: column;
+  }
+  .profileCard {
+    min-width: 100%;
+    padding: 25px;
+  }
+  .ordersCard {
+    min-width: 100%;
+    padding: 25px;
+  }
+  .orderDetails {
+    flex-direction: column;
+    text-align: left;
+  }
+  .orderSummary {
+    text-align: left;
+    margin-top: 10px;
+  }
+}
+
+

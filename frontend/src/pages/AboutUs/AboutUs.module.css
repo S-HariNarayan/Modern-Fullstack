@@ -171,3 +171,48 @@
   margin: 0;
   font-weight: bold;
 }
+
+@media (max-width: 768px) {
+  .aboutHero {
+    height: 200px;
+  }
+  .aboutHero h2 {
+    font-size: 28px;
+    padding: 10px 20px;
+  }
+  .aboutSection {
+    padding: 40px 20px;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .aboutText h2 {
+    font-size: 28px;
+  }
+  .aboutText p {
+    font-size: 15px;
+  }
+  .aboutImage img {
+    width: 100%;
+  }
+  .mission {
+    padding: 40px 20px;
+  }
+  .mission h2 {
+    font-size: 28px;
+  }
+  .mission p {
+    font-size: 15px;
+    width: 100%;
+  }
+  .team {
+    padding: 40px 20px;
+  }
+  .team h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  .teamCard {
+    width: 100%;
+    max-width: 320px;
+  }
+}

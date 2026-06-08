@@ -228,3 +228,40 @@
   box-shadow: 0 6px 20px rgba(162, 255, 134, 0.4);
   transform: translateY(-2px);
 }
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 20px 15px;
+  }
+  .title {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+  .cartItemsSection {
+    min-width: 100%;
+  }
+  .summarySection {
+    min-width: 100%;
+    padding: 25px;
+  }
+  .cartItem {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 20px;
+    gap: 15px;
+  }
+  .itemImage {
+    margin: 0 auto;
+  }
+  .itemInfo {
+    min-width: auto;
+  }
+  .qtyControls {
+    justify-content: center;
+  }
+  .removeBtn {
+    align-self: center;
+  }
+}
+
