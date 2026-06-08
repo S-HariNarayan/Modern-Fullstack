@@ -17,6 +17,7 @@ import AdminProducts from './pages/Admin/AdminProducts/AdminProducts';
 import AdminOrders from './pages/Admin/AdminOrders/AdminOrders';
 import AdminUsers from './pages/Admin/AdminUsers/AdminUsers';
 import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions';
 
 // Simple Route Protection Middleware for Customers
 function PrivateRoute({ children }) {
@@ -64,6 +65,7 @@ export default function App() {
         <Route path="/order-success" element={<PrivateRoute><OrderSuccess /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/privacy-policy" element={<PrivateRoute><PrivacyPolicy /></PrivateRoute>} />
+        <Route path="/terms-and-conditions" element={<PrivateRoute><TermsAndConditions /></PrivateRoute>} />
 
         {/* Private Admin Routes */}
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
