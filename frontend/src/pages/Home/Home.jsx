@@ -10,16 +10,10 @@ export default function Home() {
   const navigate = useNavigate();
   const [popularProducts, setPopularProducts] = useState([]);
   const [email, setEmail] = useState('');
+  const isLoggedIn = !!localStorage.getItem('token');
 
   useEffect(() => {
-    // Check if user logged in
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    // Fetch popular products from backend
+    // Fetch popular products from backend (public API)
     axios.get(`${API_BASE_URL}/products`)
       .then(response => {
         // Just take the first 3 products for the popular section
@@ -28,9 +22,15 @@ export default function Home() {
       .catch(err => {
         console.error('Error fetching products:', err);
       });
-  }, [navigate]);
+  }, []);
 
   const handleAddToCart = (product) => {
+    if (!isLoggedIn) {
+      alert('Please login first to shop!');
+      navigate('/login');
+      return;
+    }
+
     let cart = [];
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
@@ -80,9 +80,20 @@ export default function Home() {
               Shop fresh vegetables, fruits, dairy products, juices and snacks directly from your home with fast
               delivery and affordable prices.
             </p>
-            <button className={styles.heroBtn} onClick={() => navigate('/products')}>
-              Start Shopping
-            </button>
+            {isLoggedIn ? (
+              <button className={styles.heroBtn} onClick={() => navigate('/products')}>
+                Start Shopping
+              </button>
+            ) : (
+              <div className={styles.heroButtons}>
+                <button className={styles.heroBtn} onClick={() => navigate('/login')}>
+                  Login to Shop
+                </button>
+                <button className={styles.registerBtn} onClick={() => navigate('/signup')}>
+                  Register Account
+                </button>
+              </div>
+            )}
           </div>
           <div className={styles.heroImage}>
             <img

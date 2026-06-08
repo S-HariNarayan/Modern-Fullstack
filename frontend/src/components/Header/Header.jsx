@@ -69,7 +69,7 @@ export default function Header() {
   if (!user) {
     return (
       <header className={styles.navbar}>
-        <Link to="/login" className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <img src="/images/Screenshot 2026-05-25 213956.png" alt="Epic Grocery Logo" />
           <h1>Epic Grocery</h1>
         </Link>
@@ -106,7 +106,7 @@ export default function Header() {
 
   return (
     <header className={styles.navbar}>
-      <Link to="/home" className={styles.logo}>
+      <Link to="/" className={styles.logo}>
         <img src="/images/Screenshot 2026-05-25 213956.png" alt="Epic Grocery Logo" />
         <h1>Epic Grocery</h1>
       </Link>
