@@ -9,6 +9,8 @@ export default function Header() {
   const [cartCount, setCartCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
 
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('appTheme') || 'original';
@@ -20,6 +22,9 @@ export default function Header() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -29,6 +34,7 @@ export default function Header() {
 
   useEffect(() => {
     setMenuOpen(false);
+    setProfileOpen(false);
   }, [location]);
 
   useEffect(() => {
@@ -202,18 +208,30 @@ export default function Header() {
               Cart {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
             </Link>
           </li>
-          <li><Link to="/profile">Profile</Link></li>
-          {user.isAdmin && (
-            <li>
-              <Link to="/admin/dashboard" style={{ color: 'var(--accent-neon)', borderBottom: '2px solid var(--accent-neon)', paddingBottom: '2px' }}>
-                Admin Panel
-              </Link>
-            </li>
-          )}
-          <li>
-            <button onClick={handleLogout} className={styles.logoutBtn}>
-              Logout
+          <li className={styles.profileContainer} ref={profileRef}>
+            <button onClick={() => setProfileOpen(!profileOpen)} className={styles.profileBtn} aria-label="User profile">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.profileIcon}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
             </button>
+            {profileOpen && (
+              <div className={styles.profileDropdownMenu}>
+                <div className={styles.profileHeader}>
+                  <p className={styles.profileGreeting}>Hello, {user.fullName || 'User'}!</p>
+                  <p className={styles.profileEmail}>{user.email}</p>
+                </div>
+                <hr className={styles.divider} />
+                <Link to="/profile" className={styles.dropdownItem}>👤 My Profile</Link>
+                {user.isAdmin && (
+                  <Link to="/admin/dashboard" className={styles.dropdownItem}>🛠️ Admin Panel</Link>
+                )}
+                <hr className={styles.divider} />
+                <button onClick={handleLogout} className={`${styles.dropdownItem} ${styles.profileLogoutBtn}`}>
+                  🚪 Logout
+                </button>
+              </div>
+            )}
           </li>
         </ul>
       </div>
