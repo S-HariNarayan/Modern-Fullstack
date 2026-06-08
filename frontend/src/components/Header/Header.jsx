@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
 
@@ -7,11 +7,29 @@ export default function Header() {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('appTheme') || 'original';
     return saved === 'dark-neon' ? 'dark-neon' : 'original';
   });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
 
   useEffect(() => {
     // Read user from localStorage
@@ -96,6 +114,26 @@ export default function Header() {
                 )}
               </button>
             </li>
+            <li className={styles.menuContainer} ref={dropdownRef}>
+              <button onClick={() => setMenuOpen(!menuOpen)} className={styles.menuBtn}>
+                Menu ☰
+              </button>
+              {menuOpen && (
+                <div className={styles.dropdownMenu}>
+                  <Link to="/" className={styles.dropdownItem}>🏠 Home</Link>
+                  <Link to="/about" className={styles.dropdownItem}>ℹ️ About Us</Link>
+                  <Link to="/categories" className={styles.dropdownItem}>📁 Categories</Link>
+                  <Link to="/products" className={styles.dropdownItem}>📦 Products</Link>
+                  <Link to="/cart" className={styles.dropdownItem}>🛒 Cart</Link>
+                  <Link to="/profile" className={styles.dropdownItem}>👤 Profile</Link>
+                  <Link to="/privacy-policy" className={styles.dropdownItem}>🔒 Privacy Policy</Link>
+                  <hr className={styles.divider} />
+                  <Link to="/login" className={styles.dropdownItem}>🔑 Login</Link>
+                  <Link to="/signup" className={styles.dropdownItem}>📝 Register</Link>
+                  <Link to="/forget-password" className={styles.dropdownItem}>❓ Forgot Password</Link>
+                </div>
+              )}
+            </li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/signup">Register</Link></li>
           </ul>
@@ -133,7 +171,29 @@ export default function Header() {
               )}
             </button>
           </li>
-          <li><Link to="/home">Home</Link></li>
+          <li className={styles.menuContainer} ref={dropdownRef}>
+            <button onClick={() => setMenuOpen(!menuOpen)} className={styles.menuBtn}>
+              Menu ☰
+            </button>
+            {menuOpen && (
+              <div className={styles.dropdownMenu}>
+                <Link to="/" className={styles.dropdownItem}>🏠 Home</Link>
+                <Link to="/about" className={styles.dropdownItem}>ℹ️ About Us</Link>
+                <Link to="/categories" className={styles.dropdownItem}>📁 Categories</Link>
+                <Link to="/products" className={styles.dropdownItem}>📦 Products</Link>
+                <Link to="/cart" className={styles.dropdownItem}>🛒 Cart {cartCount > 0 && `(${cartCount})`}</Link>
+                <Link to="/profile" className={styles.dropdownItem}>👤 Profile</Link>
+                <Link to="/privacy-policy" className={styles.dropdownItem}>🔒 Privacy Policy</Link>
+                {user.isAdmin && (
+                  <>
+                    <hr className={styles.divider} />
+                    <Link to="/admin/dashboard" className={styles.dropdownItem}>🛠️ Admin Dashboard</Link>
+                  </>
+                )}
+              </div>
+            )}
+          </li>
+          <li><Link to="/">Home</Link></li>
           <li><Link to="/about">AboutUs</Link></li>
           <li><Link to="/categories">Categories</Link></li>
           <li><Link to="/products">Products</Link></li>
