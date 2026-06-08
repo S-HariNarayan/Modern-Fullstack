@@ -282,30 +282,33 @@
 @media (max-width: 768px) {
   .navbar {
     padding: 12px 15px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
   }
   .logo img {
-    width: 120px;
-    height: 38px;
+    width: 140px;
+    height: 42px;
     margin-right: 8px;
   }
   .logo h1 {
-    font-size: 20px;
+    font-size: 22px;
   }
   .navLinks ul {
-    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 15px;
   }
-  .navLinks ul li {
-    display: none;
+  .dropdownMenu {
+    right: 50%;
+    transform: translateX(50%);
+    min-width: 190px;
   }
-  .navLinks ul li:has(.themeToggleBtn),
-  .navLinks ul li.menuContainer,
-  .navLinks ul li.profileContainer {
-    display: block;
-  }
-  .dropdownMenu,
   .profileDropdownMenu {
-    right: -10px;
-    min-width: 195px;
+    right: 50%;
+    transform: translateX(50%);
+    min-width: 220px;
   }
 }
+
 
