@@ -21,6 +21,8 @@ import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions';
 import FAQ from './pages/FAQ/FAQ';
 import ContactUs from './pages/ContactUs/ContactUs';
 
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+
 // Simple Route Protection Middleware for Customers
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -49,6 +51,7 @@ export default function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
