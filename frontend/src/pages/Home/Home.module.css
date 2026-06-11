@@ -452,3 +452,30 @@
   background: #ff5252;
   box-shadow: 0 6px 15px rgba(255, 56, 56, 0.4);
 }
+
+.moreProductsContainer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.moreBtn {
+  padding: 14px 35px;
+  border: 2px solid var(--accent-green);
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.15);
+}
+
+.moreBtn:hover {
+  background: var(--accent-green);
+  color: #000;
+  box-shadow: 0 6px 20px rgba(162, 255, 134, 0.4);
+  transform: translateY(-2px);
+}

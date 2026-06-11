@@ -292,6 +292,11 @@ export default function Home() {
               );
             })}
           </div>
+          <div className={styles.moreProductsContainer}>
+            <button className={styles.moreBtn} onClick={() => navigate('/products')}>
+              More Products &rarr;
+            </button>
+          </div>
         </section>
 
         {/* Newsletter */}

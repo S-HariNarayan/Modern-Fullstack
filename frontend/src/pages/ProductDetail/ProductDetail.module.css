@@ -184,6 +184,26 @@
   box-shadow: none;
 }
 
+.removeBtn {
+  padding: 15px 32px;
+  background: #ff3838;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 56, 56, 0.3);
+  align-self: flex-start;
+}
+
+.removeBtn:hover {
+  background: #ff5252;
+  box-shadow: 0 6px 20px rgba(255, 56, 56, 0.5);
+  transform: translateY(-2px);
+}
+
 /* Reviews section */
 .reviewsSection {
   background: var(--bg-secondary);

@@ -12,6 +12,25 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const updateCart = () => {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
+      } else {
+        setCart([]);
+      }
+    };
+    updateCart();
+    window.addEventListener('cartUpdated', updateCart);
+    window.addEventListener('storage', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+      window.removeEventListener('storage', updateCart);
+    };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -31,27 +50,47 @@ export default function ProductDetail() {
       });
   }, [id, navigate]);
 
+  const cartItem = cart.find(item => item.product === id);
+  const isInCart = !!cartItem;
+
   const handleQtyChange = (val) => {
-    const newQty = quantity + val;
-    if (newQty >= 1 && newQty <= (product?.stock || 1)) {
-      setQuantity(newQty);
+    if (isInCart) {
+      let currentCart = [];
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        currentCart = JSON.parse(storedCart);
+      }
+      const existingIndex = currentCart.findIndex(item => item.product === id);
+      if (existingIndex > -1) {
+        const newQty = currentCart[existingIndex].quantity + val;
+        if (newQty >= 1 && newQty <= (product?.stock || 1)) {
+          currentCart[existingIndex].quantity = newQty;
+          localStorage.setItem('cart', JSON.stringify(currentCart));
+          window.dispatchEvent(new Event('cartUpdated'));
+        }
+      }
+    } else {
+      const newQty = quantity + val;
+      if (newQty >= 1 && newQty <= (product?.stock || 1)) {
+        setQuantity(newQty);
+      }
     }
   };
 
   const handleAddToCart = () => {
     if (!product) return;
 
-    let cart = [];
+    let currentCart = [];
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
-      cart = JSON.parse(storedCart);
+      currentCart = JSON.parse(storedCart);
     }
 
-    const existingIndex = cart.findIndex(item => item.product === product._id);
+    const existingIndex = currentCart.findIndex(item => item.product === product._id);
     if (existingIndex > -1) {
-      cart[existingIndex].quantity += quantity;
+      currentCart[existingIndex].quantity += quantity;
     } else {
-      cart.push({
+      currentCart.push({
         product: product._id,
         name: product.name,
         price: product.price,
@@ -60,9 +99,25 @@ export default function ProductDetail() {
       });
     }
 
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart', JSON.stringify(currentCart));
     window.dispatchEvent(new Event('cartUpdated'));
     alert(`${quantity} ${product.name} added to cart!`);
+  };
+
+  const handleRemoveFromCart = () => {
+    if (!product) return;
+
+    let currentCart = [];
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      currentCart = JSON.parse(storedCart);
+    }
+
+    const updatedCart = currentCart.filter(item => item.product !== product._id);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    setQuantity(1);
+    window.dispatchEvent(new Event('cartUpdated'));
+    alert(`${product.name} removed from cart!`);
   };
 
   if (loading) {
@@ -123,14 +178,20 @@ export default function ProductDetail() {
                 <>
                   <div className={styles.qtySelector}>
                     <span>Quantity:</span>
-                    <button className={styles.qtyBtn} onClick={() => handleQtyChange(-1)} disabled={quantity <= 1}>-</button>
-                    <span className={styles.qtyDisplay}>{quantity}</span>
-                    <button className={styles.qtyBtn} onClick={() => handleQtyChange(1)} disabled={quantity >= product.stock}>+</button>
+                    <button className={styles.qtyBtn} onClick={() => handleQtyChange(-1)} disabled={(isInCart ? cartItem.quantity : quantity) <= 1}>-</button>
+                    <span className={styles.qtyDisplay}>{isInCart ? cartItem.quantity : quantity}</span>
+                    <button className={styles.qtyBtn} onClick={() => handleQtyChange(1)} disabled={(isInCart ? cartItem.quantity : quantity) >= product.stock}>+</button>
                   </div>
 
-                  <button className={styles.cartBtn} onClick={handleAddToCart}>
-                    Add To Cart
-                  </button>
+                  {isInCart ? (
+                    <button className={styles.removeBtn} onClick={handleRemoveFromCart}>
+                      Remove From Cart
+                    </button>
+                  ) : (
+                    <button className={styles.cartBtn} onClick={handleAddToCart}>
+                      Add To Cart
+                    </button>
+                  )}
                 </>
               )}
             </div>
