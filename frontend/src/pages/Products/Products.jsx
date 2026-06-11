@@ -131,6 +131,14 @@ export default function Products() {
       } else {
         return;
       }
+    } else if (change > 0) {
+      currentCart.push({
+        product: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      });
     }
 
     localStorage.setItem('cart', JSON.stringify(currentCart));
@@ -197,11 +205,16 @@ export default function Products() {
                     </div>
                     <div>
                       <p className={styles.price}>₹{product.price}</p>
-                      {qtyInCart > 0 ? (
+                      {product.stock <= 0 ? (
+                        <button className={styles.cartBtn} disabled>
+                          Out of Stock
+                        </button>
+                      ) : (
                         <div className={styles.qtySelector} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                           <button
                             className={styles.qtyBtn}
                             onClick={(e) => handleQtyChange(product, -1, e)}
+                            disabled={qtyInCart <= 0}
                           >
                             -
                           </button>
@@ -214,14 +227,6 @@ export default function Products() {
                             +
                           </button>
                         </div>
-                      ) : (
-                        <button
-                          className={styles.cartBtn}
-                          onClick={(e) => handleAddToCart(product, e)}
-                          disabled={product.stock <= 0}
-                        >
-                          {product.stock <= 0 ? 'Out of Stock' : 'Add To Cart'}
-                        </button>
                       )}
                     </div>
                   </div>

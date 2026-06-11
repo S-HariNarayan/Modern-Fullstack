@@ -102,6 +102,14 @@ export default function Home() {
       } else {
         return;
       }
+    } else if (change > 0) {
+      currentCart.push({
+        product: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      });
     }
 
     localStorage.setItem('cart', JSON.stringify(currentCart));
@@ -207,11 +215,16 @@ export default function Home() {
                         ? '/ Litre'
                         : ''}
                     </p>
-                    {qtyInCart > 0 ? (
+                    {product.stock <= 0 ? (
+                      <button className={styles.cartBtn} disabled>
+                        Out of Stock
+                      </button>
+                    ) : (
                       <div className={styles.qtySelector}>
                         <button
                           className={styles.qtyBtn}
                           onClick={(e) => handleQtyChange(product, -1, e)}
+                          disabled={qtyInCart <= 0}
                         >
                           -
                         </button>
@@ -224,17 +237,6 @@ export default function Home() {
                           +
                         </button>
                       </div>
-                    ) : (
-                      <button
-                        className={styles.cartBtn}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleAddToCart(product);
-                        }}
-                      >
-                        Add To Cart
-                      </button>
                     )}
                   </div>
                 </div>
