@@ -220,3 +220,49 @@
   }
 }
 
+/* Quantity selector inside card */
+.qtySelector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.qtyBtn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-glow);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.qtyBtn:hover {
+  background: var(--accent-green);
+  color: #000;
+  border-color: var(--accent-green);
+}
+
+.qtyBtn:disabled {
+  background: #2b332b;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.qtyDisplay {
+  font-size: 18px;
+  font-weight: bold;
+  width: 30px;
+  text-align: center;
+  color: var(--text-primary);
+}
+

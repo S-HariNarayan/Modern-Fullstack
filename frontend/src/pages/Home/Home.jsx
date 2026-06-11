@@ -10,7 +10,26 @@ export default function Home() {
   const navigate = useNavigate();
   const [popularProducts, setPopularProducts] = useState([]);
   const [email, setEmail] = useState('');
+  const [cart, setCart] = useState([]);
   const isLoggedIn = !!localStorage.getItem('token');
+
+  useEffect(() => {
+    const updateCart = () => {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
+      } else {
+        setCart([]);
+      }
+    };
+    updateCart();
+    window.addEventListener('cartUpdated', updateCart);
+    window.addEventListener('storage', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+      window.removeEventListener('storage', updateCart);
+    };
+  }, []);
 
   useEffect(() => {
     // Fetch popular products from backend (public API)
@@ -55,6 +74,38 @@ export default function Home() {
     // Trigger header update
     window.dispatchEvent(new Event('cartUpdated'));
     alert(`${product.name} added to cart!`);
+  };
+
+  const handleQtyChange = (product, change, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isLoggedIn) {
+      alert('Please login first to shop!');
+      navigate('/login');
+      return;
+    }
+
+    let currentCart = [];
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      currentCart = JSON.parse(storedCart);
+    }
+
+    const existingIndex = currentCart.findIndex(item => item.product === product._id);
+    if (existingIndex > -1) {
+      const newQty = currentCart[existingIndex].quantity + change;
+      if (newQty <= 0) {
+        currentCart.splice(existingIndex, 1);
+      } else if (newQty <= (product.stock || 1)) {
+        currentCart[existingIndex].quantity = newQty;
+      } else {
+        return;
+      }
+    }
+
+    localStorage.setItem('cart', JSON.stringify(currentCart));
+    window.dispatchEvent(new Event('cartUpdated'));
   };
 
   const handleSubscribe = (e) => {
@@ -138,20 +189,57 @@ export default function Home() {
         <section className={styles.productsSection}>
           <h2>Popular Products</h2>
           <div className={styles.productContainer}>
-            {popularProducts.map((product) => (
-              <div key={product._id} className={styles.productCard}>
-                <Link to={`/products/${product._id}`}>
-                  <img src={product.image} alt={product.name} />
-                </Link>
-                <div className={styles.productDetails}>
-                  <h3>{product.name}</h3>
-                  <p className={styles.price}>₹{product.price} {product.category === 'Fruits' || product.category === 'Vegetables' ? '/ Kg' : product.category === 'Dairy' && product.name.includes('Milk') ? '/ Litre' : ''}</p>
-                  <button className={styles.cartBtn} onClick={() => handleAddToCart(product)}>
-                    Add To Cart
-                  </button>
+            {popularProducts.map((product) => {
+              const cartItem = cart.find(item => item.product === product._id);
+              const qtyInCart = cartItem ? cartItem.quantity : 0;
+              return (
+                <div key={product._id} className={styles.productCard}>
+                  <Link to={`/products/${product._id}`}>
+                    <img src={product.image} alt={product.name} />
+                  </Link>
+                  <div className={styles.productDetails}>
+                    <h3>{product.name}</h3>
+                    <p className={styles.price}>
+                      ₹{product.price}{' '}
+                      {product.category === 'Fruits' || product.category === 'Vegetables'
+                        ? '/ Kg'
+                        : product.category === 'Dairy' && product.name.includes('Milk')
+                        ? '/ Litre'
+                        : ''}
+                    </p>
+                    {qtyInCart > 0 ? (
+                      <div className={styles.qtySelector}>
+                        <button
+                          className={styles.qtyBtn}
+                          onClick={(e) => handleQtyChange(product, -1, e)}
+                        >
+                          -
+                        </button>
+                        <span className={styles.qtyDisplay}>{qtyInCart}</span>
+                        <button
+                          className={styles.qtyBtn}
+                          onClick={(e) => handleQtyChange(product, 1, e)}
+                          disabled={qtyInCart >= product.stock}
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className={styles.cartBtn}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                      >
+                        Add To Cart
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 

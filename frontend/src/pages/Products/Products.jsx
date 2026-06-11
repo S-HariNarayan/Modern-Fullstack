@@ -11,6 +11,25 @@ export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const updateCart = () => {
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        setCart(JSON.parse(storedCart));
+      } else {
+        setCart([]);
+      }
+    };
+    updateCart();
+    window.addEventListener('cartUpdated', updateCart);
+    window.addEventListener('storage', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+      window.removeEventListener('storage', updateCart);
+    };
+  }, []);
 
   // Read search & filters from URL params
   const categoryParam = searchParams.get('category') || '';
@@ -92,6 +111,32 @@ export default function Products() {
     alert(`${product.name} added to cart!`);
   };
 
+  const handleQtyChange = (product, change, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let currentCart = [];
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+      currentCart = JSON.parse(storedCart);
+    }
+
+    const existingIndex = currentCart.findIndex(item => item.product === product._id);
+    if (existingIndex > -1) {
+      const newQty = currentCart[existingIndex].quantity + change;
+      if (newQty <= 0) {
+        currentCart.splice(existingIndex, 1);
+      } else if (newQty <= (product.stock || 1)) {
+        currentCart[existingIndex].quantity = newQty;
+      } else {
+        return;
+      }
+    }
+
+    localStorage.setItem('cart', JSON.stringify(currentCart));
+    window.dispatchEvent(new Event('cartUpdated'));
+  };
+
   return (
     <div className={styles.productsWrapper}>
       <Header />
@@ -139,27 +184,50 @@ export default function Products() {
           <div className={styles.noProducts}>No products found matching your criteria.</div>
         ) : (
           <div className={styles.grid}>
-            {products.map((product) => (
-              <Link to={`/products/${product._id}`} key={product._id} className={styles.card}>
-                <img src={product.image} alt={product.name} />
-                <div className={styles.details}>
-                  <div>
-                    <span className={styles.categoryTag}>{product.category}</span>
-                    <h3>{product.name}</h3>
+            {products.map((product) => {
+              const cartItem = cart.find(item => item.product === product._id);
+              const qtyInCart = cartItem ? cartItem.quantity : 0;
+              return (
+                <Link to={`/products/${product._id}`} key={product._id} className={styles.card}>
+                  <img src={product.image} alt={product.name} />
+                  <div className={styles.details}>
+                    <div>
+                      <span className={styles.categoryTag}>{product.category}</span>
+                      <h3>{product.name}</h3>
+                    </div>
+                    <div>
+                      <p className={styles.price}>₹{product.price}</p>
+                      {qtyInCart > 0 ? (
+                        <div className={styles.qtySelector} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                          <button
+                            className={styles.qtyBtn}
+                            onClick={(e) => handleQtyChange(product, -1, e)}
+                          >
+                            -
+                          </button>
+                          <span className={styles.qtyDisplay}>{qtyInCart}</span>
+                          <button
+                            className={styles.qtyBtn}
+                            onClick={(e) => handleQtyChange(product, 1, e)}
+                            disabled={qtyInCart >= product.stock}
+                          >
+                            +
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className={styles.cartBtn}
+                          onClick={(e) => handleAddToCart(product, e)}
+                          disabled={product.stock <= 0}
+                        >
+                          {product.stock <= 0 ? 'Out of Stock' : 'Add To Cart'}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <p className={styles.price}>₹{product.price}</p>
-                    <button
-                      className={styles.cartBtn}
-                      onClick={(e) => handleAddToCart(product, e)}
-                      disabled={product.stock <= 0}
-                    >
-                      {product.stock <= 0 ? 'Out of Stock' : 'Add To Cart'}
-                    </button>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         )}
       </main>
