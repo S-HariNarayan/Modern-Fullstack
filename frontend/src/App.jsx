@@ -12,6 +12,7 @@ import Cart from './pages/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
 import OrderSuccess from './pages/OrderSuccess/OrderSuccess';
 import Profile from './pages/Profile/Profile';
+import Notifications from './pages/Notifications/Notifications';
 import AdminDashboard from './pages/Admin/AdminDashboard/AdminDashboard';
 import AdminProducts from './pages/Admin/AdminProducts/AdminProducts';
 import AdminOrders from './pages/Admin/AdminOrders/AdminOrders';
@@ -69,6 +70,7 @@ export default function App() {
         <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
         <Route path="/order-success" element={<PrivateRoute><OrderSuccess /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
         <Route path="/privacy-policy" element={<PrivateRoute><PrivacyPolicy /></PrivateRoute>} />
         <Route path="/terms-and-conditions" element={<PrivateRoute><TermsAndConditions /></PrivateRoute>} />
         <Route path="/faq" element={<PrivateRoute><FAQ /></PrivateRoute>} />

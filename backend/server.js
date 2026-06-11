@@ -31,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Health Check / API home
 app.get('/', (req, res) => {

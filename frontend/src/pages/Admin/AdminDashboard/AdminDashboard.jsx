@@ -15,6 +15,40 @@ export default function AdminDashboard() {
   });
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [offerTitle, setOfferTitle] = useState('');
+  const [offerMessage, setOfferMessage] = useState('');
+  const [offerLink, setOfferLink] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const handleSendOffer = async (e) => {
+    e.preventDefault();
+    if (!offerTitle || !offerMessage) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      setSending(true);
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      await axios.post(`${API_BASE_URL}/notifications/offer`, {
+        title: offerTitle,
+        message: offerMessage,
+        link: offerLink
+      }, config);
+
+      alert('Offer notification broadcasted to all users successfully!');
+      setOfferTitle('');
+      setOfferMessage('');
+      setOfferLink('');
+    } catch (err) {
+      console.error('Error broadcasting offer:', err);
+      alert('Failed to send announcement notification');
+    } finally {
+      setSending(false);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -132,6 +166,50 @@ export default function AdminDashboard() {
                   <p>{stats.totalUsers}</p>
                 </div>
               </div>
+            </div>
+
+            {/* Broadcast Announcement Form */}
+            <div className={styles.formSection}>
+              <h2>Broadcast New Offer / Announcement</h2>
+              <form onSubmit={handleSendOffer}>
+                <div className={styles.formGrid}>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="offerTitle">Announcement Title</label>
+                    <input
+                      type="text"
+                      id="offerTitle"
+                      placeholder="e.g. 20% Off All Fruits! 🍓"
+                      value={offerTitle}
+                      onChange={(e) => setOfferTitle(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="offerLink">Target Link (Optional)</label>
+                    <input
+                      type="text"
+                      id="offerLink"
+                      placeholder="e.g. /products or category link"
+                      value={offerLink}
+                      onChange={(e) => setOfferLink(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className={styles.inputGroup} style={{ marginBottom: '20px' }}>
+                  <label htmlFor="offerMessage">Message Content</label>
+                  <textarea
+                    id="offerMessage"
+                    rows="3"
+                    placeholder="Describe the offer details..."
+                    value={offerMessage}
+                    onChange={(e) => setOfferMessage(e.target.value)}
+                    required
+                  />
+                </div>
+                <button type="submit" className={styles.sendBtn} disabled={sending}>
+                  {sending ? 'Broadcasting...' : 'Broadcast Announcement 📢'}
+                </button>
+              </form>
             </div>
 
             {/* Recent Orders Section */}

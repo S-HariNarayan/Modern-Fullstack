@@ -3,6 +3,7 @@ const router = express.Router();
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
 
 // @route   POST api/orders
@@ -99,8 +100,24 @@ router.put('/:id/status', auth, async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
+    const oldStatus = order.status;
     order.status = status;
     await order.save();
+
+    if (status === 'Delivered' && oldStatus !== 'Delivered') {
+      try {
+        const newNotification = new Notification({
+          user: order.user,
+          title: 'Order Delivered 🎉',
+          message: `Your order #${order._id.toString().slice(-6)} has been delivered! Please leave us a review.`,
+          type: 'order',
+          link: '/profile'
+        });
+        await newNotification.save();
+      } catch (notifErr) {
+        console.error('Error creating order delivery notification:', notifErr.message);
+      }
+    }
 
     res.json(order);
   } catch (err) {

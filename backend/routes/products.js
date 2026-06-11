@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const auth = require('../middleware/auth');
 
 // @route   GET api/products
@@ -81,6 +82,20 @@ router.post('/', auth, async (req, res) => {
     });
 
     const product = await newProduct.save();
+
+    try {
+      const newNotification = new Notification({
+        user: null,
+        title: 'New Product Added! 🍎',
+        message: `Fresh ${product.name} is now available in category ${product.category}. Shop now!`,
+        type: 'new_product',
+        link: `/products/${product._id.toString()}`
+      });
+      await newNotification.save();
+    } catch (notifErr) {
+      console.error('Error creating product notification:', notifErr.message);
+    }
+
     res.json(product);
   } catch (err) {
     console.error(err.message);

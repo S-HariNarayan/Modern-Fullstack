@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import styles from './Header.module.css';
+import { API_BASE_URL } from '../../config';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -11,6 +13,9 @@ export default function Header() {
   const dropdownRef = useRef(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const notificationsRef = useRef(null);
 
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('appTheme') || 'original';
@@ -25,6 +30,9 @@ export default function Header() {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setProfileOpen(false);
       }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+        setNotificationsOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -35,6 +43,7 @@ export default function Header() {
   useEffect(() => {
     setMenuOpen(false);
     setProfileOpen(false);
+    setNotificationsOpen(false);
   }, [location]);
 
   useEffect(() => {
@@ -72,6 +81,64 @@ export default function Header() {
       window.removeEventListener('cartUpdated', updateCartCount);
     };
   }, [location, theme]);
+
+  const fetchNotifications = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      const response = await axios.get(`${API_BASE_URL}/notifications`, config);
+      setNotifications(response.data);
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 10000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const handleMarkAsRead = async (notif) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      await axios.put(`${API_BASE_URL}/notifications/${notif._id}/read`, {}, config);
+      setNotifications(prev =>
+        prev.map(n => {
+          if (n._id === notif._id) {
+            if (n.user) {
+              return { ...n, isRead: true };
+            } else {
+              return { ...n, readBy: [...(n.readBy || []), user?._id] };
+            }
+          }
+          return n;
+        })
+      );
+      setNotificationsOpen(false);
+      if (notif.link) {
+        navigate(notif.link);
+      }
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  };
+
+  const unreadNotifications = notifications.filter(n => {
+    if (n.user) {
+      return !n.isRead;
+    } else {
+      return user && !n.readBy?.includes(user._id);
+    }
+  });
+  const unreadCount = unreadNotifications.length;
 
   const toggleTheme = () => {
     const nextTheme = theme === 'dark-neon' ? 'original' : 'dark-neon';
@@ -218,6 +285,7 @@ export default function Header() {
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
+              {unreadCount > 0 && <span className={styles.profileNotificationBadge}>{unreadCount}</span>}
             </button>
             {profileOpen && (
               <div className={styles.profileDropdownMenu}>
@@ -227,6 +295,9 @@ export default function Header() {
                 </div>
                 <hr className={styles.divider} />
                 <Link to="/profile" className={styles.dropdownItem}>👤 My Profile</Link>
+                <Link to="/notifications" className={styles.dropdownItem}>
+                  🔔 Notifications {unreadCount > 0 && <span className={styles.notifBadgeSmall}>{unreadCount}</span>}
+                </Link>
                 {user.isAdmin && (
                   <Link to="/admin/dashboard" className={styles.dropdownItem}>🛠️ Admin Panel</Link>
                 )}
