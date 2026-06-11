@@ -12,6 +12,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
+  const [localQuantities, setLocalQuantities] = useState({});
 
   useEffect(() => {
     const updateCart = () => {
@@ -87,31 +88,34 @@ export default function Products() {
     e.preventDefault(); // prevent navigation since card links to details
     e.stopPropagation();
 
-    let cart = [];
+    let currentCart = [];
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
-      cart = JSON.parse(storedCart);
+      currentCart = JSON.parse(storedCart);
     }
 
-    const existingIndex = cart.findIndex(item => item.product === product._id);
+    const existingIndex = currentCart.findIndex(item => item.product === product._id);
+    const qtyToAdd = localQuantities[product._id] || 1;
+
     if (existingIndex > -1) {
-      cart[existingIndex].quantity += 1;
+      currentCart[existingIndex].quantity += qtyToAdd;
     } else {
-      cart.push({
+      currentCart.push({
         product: product._id,
         name: product.name,
         price: product.price,
         image: product.image,
-        quantity: 1
+        quantity: qtyToAdd
       });
     }
 
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cart', JSON.stringify(currentCart));
+    setLocalQuantities(prev => ({ ...prev, [product._id]: 1 }));
     window.dispatchEvent(new Event('cartUpdated'));
     alert(`${product.name} added to cart!`);
   };
 
-  const handleQtyChange = (product, change, e) => {
+  const handleRemoveFromCart = (product, e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -121,28 +125,39 @@ export default function Products() {
       currentCart = JSON.parse(storedCart);
     }
 
-    const existingIndex = currentCart.findIndex(item => item.product === product._id);
-    if (existingIndex > -1) {
-      const newQty = currentCart[existingIndex].quantity + change;
-      if (newQty <= 0) {
-        currentCart.splice(existingIndex, 1);
-      } else if (newQty <= (product.stock || 1)) {
-        currentCart[existingIndex].quantity = newQty;
-      } else {
-        return;
-      }
-    } else if (change > 0) {
-      currentCart.push({
-        product: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        quantity: 1
-      });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(currentCart));
+    const updatedCart = currentCart.filter(item => item.product !== product._id);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
     window.dispatchEvent(new Event('cartUpdated'));
+    alert(`${product.name} removed from cart!`);
+  };
+
+  const handleQtyChange = (product, change, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const cartItem = cart.find(item => item.product === product._id);
+    if (cartItem) {
+      let currentCart = [];
+      const storedCart = localStorage.getItem('cart');
+      if (storedCart) {
+        currentCart = JSON.parse(storedCart);
+      }
+      const existingIndex = currentCart.findIndex(item => item.product === product._id);
+      if (existingIndex > -1) {
+        const newQty = currentCart[existingIndex].quantity + change;
+        if (newQty >= 1 && newQty <= (product.stock || 1)) {
+          currentCart[existingIndex].quantity = newQty;
+          localStorage.setItem('cart', JSON.stringify(currentCart));
+          window.dispatchEvent(new Event('cartUpdated'));
+        }
+      }
+    } else {
+      const currentLocalQty = localQuantities[product._id] || 1;
+      const newLocalQty = currentLocalQty + change;
+      if (newLocalQty >= 1 && newLocalQty <= (product.stock || 1)) {
+        setLocalQuantities(prev => ({ ...prev, [product._id]: newLocalQty }));
+      }
+    }
   };
 
   return (
@@ -194,7 +209,8 @@ export default function Products() {
           <div className={styles.grid}>
             {products.map((product) => {
               const cartItem = cart.find(item => item.product === product._id);
-              const qtyInCart = cartItem ? cartItem.quantity : 0;
+              const isInCart = !!cartItem;
+              const qty = isInCart ? cartItem.quantity : (localQuantities[product._id] || 1);
               return (
                 <Link to={`/products/${product._id}`} key={product._id} className={styles.card}>
                   <img src={product.image} alt={product.name} />
@@ -205,28 +221,48 @@ export default function Products() {
                     </div>
                     <div>
                       <p className={styles.price}>₹{product.price}</p>
+                      
+                      {product.stock > 0 && (
+                        <div className={styles.qtySelectorContainer} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                          <span className={styles.qtyLabel}>Quantity:</span>
+                          <div className={styles.qtySelector}>
+                            <button
+                              className={styles.qtyBtn}
+                              onClick={(e) => handleQtyChange(product, -1, e)}
+                              disabled={qty <= 1}
+                            >
+                              -
+                            </button>
+                            <span className={styles.qtyDisplay}>{qty}</span>
+                            <button
+                              className={styles.qtyBtn}
+                              onClick={(e) => handleQtyChange(product, 1, e)}
+                              disabled={qty >= product.stock}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
                       {product.stock <= 0 ? (
                         <button className={styles.cartBtn} disabled>
                           Out of Stock
                         </button>
+                      ) : isInCart ? (
+                        <button
+                          className={styles.removeBtn}
+                          onClick={(e) => handleRemoveFromCart(product, e)}
+                        >
+                          Remove From Cart
+                        </button>
                       ) : (
-                        <div className={styles.qtySelector} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
-                          <button
-                            className={styles.qtyBtn}
-                            onClick={(e) => handleQtyChange(product, -1, e)}
-                            disabled={qtyInCart <= 0}
-                          >
-                            -
-                          </button>
-                          <span className={styles.qtyDisplay}>{qtyInCart}</span>
-                          <button
-                            className={styles.qtyBtn}
-                            onClick={(e) => handleQtyChange(product, 1, e)}
-                            disabled={qtyInCart >= product.stock}
-                          >
-                            +
-                          </button>
-                        </div>
+                        <button
+                          className={styles.cartBtn}
+                          onClick={(e) => handleAddToCart(product, e)}
+                        >
+                          Add To Cart
+                        </button>
                       )}
                     </div>
                   </div>
