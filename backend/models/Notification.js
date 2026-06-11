@@ -32,7 +32,15 @@ const NotificationSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     }
-  ] // For global notifications, tracks who has read it
+  ], // For global notifications, tracks who has read it
+  couponCode: {
+    type: String,
+    default: ''
+  },
+  discountPercentage: {
+    type: Number,
+    default: 0
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Notification', NotificationSchema);

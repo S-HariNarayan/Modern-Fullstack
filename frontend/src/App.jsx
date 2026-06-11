@@ -16,6 +16,7 @@ import Notifications from './pages/Notifications/Notifications';
 import AdminDashboard from './pages/Admin/AdminDashboard/AdminDashboard';
 import AdminProducts from './pages/Admin/AdminProducts/AdminProducts';
 import AdminOrders from './pages/Admin/AdminOrders/AdminOrders';
+import AdminOffers from './pages/Admin/AdminOffers/AdminOffers';
 import AdminUsers from './pages/Admin/AdminUsers/AdminUsers';
 import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions';
@@ -80,6 +81,7 @@ export default function App() {
         <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
         <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+        <Route path="/admin/offers" element={<AdminRoute><AdminOffers /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
 
         {/* Catch-all Redirect */}

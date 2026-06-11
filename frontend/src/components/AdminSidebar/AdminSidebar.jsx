@@ -37,6 +37,14 @@ export default function AdminSidebar() {
         </li>
         <li>
           <NavLink
+            to="/admin/offers"
+            className={({ isActive }) => (isActive ? styles.activeLink : '')}
+          >
+            📢 Offers & Announcements
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
             to="/admin/users"
             className={({ isActive }) => (isActive ? styles.activeLink : '')}
           >

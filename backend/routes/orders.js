@@ -10,7 +10,7 @@ const auth = require('../middleware/auth');
 // @desc    Create a new order
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const { items, total, shippingAddress, mobile } = req.body;
+  const { items, total, shippingAddress, mobile, couponCode, discountAmount } = req.body;
 
   if (!items || items.length === 0) {
     return res.status(400).json({ message: 'No items in order' });
@@ -37,6 +37,8 @@ router.post('/', auth, async (req, res) => {
       total,
       shippingAddress,
       mobile,
+      couponCode: couponCode || '',
+      discountAmount: discountAmount ? Number(discountAmount) : 0,
       status: 'Processing' // Default starting status
     });
 

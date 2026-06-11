@@ -15,6 +15,12 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [loading, setLoading] = useState(false);
 
+  const [couponCodeInput, setCouponCodeInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null); // stores { couponCode, discountPercentage, title }
+  const [couponError, setCouponError] = useState('');
+  const [couponSuccess, setCouponSuccess] = useState('');
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
+
   useEffect(() => {
     // Auth Check
     const token = localStorage.getItem('token');
@@ -55,8 +61,49 @@ export default function Checkout() {
     return 50;
   };
 
+  const getDiscountAmount = () => {
+    if (!appliedCoupon) return 0;
+    return Math.round(getSubtotal() * (appliedCoupon.discountPercentage / 100));
+  };
+
   const getGrandTotal = () => {
-    return getSubtotal() + getDeliveryCharge();
+    return getSubtotal() + getDeliveryCharge() - getDiscountAmount();
+  };
+
+  const handleApplyCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponCodeInput.trim()) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      setValidatingCoupon(true);
+      setCouponError('');
+      setCouponSuccess('');
+      
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      
+      const response = await axios.get(`${API_BASE_URL}/notifications/coupon/${couponCodeInput.trim()}`, config);
+      
+      setAppliedCoupon(response.data);
+      setCouponSuccess(`Coupon "${response.data.couponCode}" applied successfully! Get ${response.data.discountPercentage}% off.`);
+      setCouponCodeInput('');
+    } catch (err) {
+      console.error('Error applying coupon:', err);
+      setCouponError(err.response?.data?.message || 'Invalid coupon code');
+      setAppliedCoupon(null);
+    } finally {
+      setValidatingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponSuccess('');
+    setCouponError('');
   };
 
   const handlePlaceOrder = async (e) => {
@@ -83,7 +130,9 @@ export default function Checkout() {
         items: orderItems,
         total: getGrandTotal(),
         shippingAddress,
-        mobile
+        mobile,
+        couponCode: appliedCoupon ? appliedCoupon.couponCode : '',
+        discountAmount: getDiscountAmount()
       }, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -195,10 +244,52 @@ export default function Checkout() {
               </div>
             ))}
 
+            <hr className={styles.divider} />
+
+            {/* Coupon Code Section */}
+            <div className={styles.couponSection}>
+              {appliedCoupon ? (
+                <div className={styles.appliedCouponRow}>
+                  <div className={styles.couponInfo}>
+                    <span className={styles.couponLabel}>Coupon:</span>
+                    <span className={styles.couponBadge}>{appliedCoupon.couponCode}</span>
+                    <span className={styles.couponDiscount}>({appliedCoupon.discountPercentage}% Off)</span>
+                  </div>
+                  <button type="button" onClick={handleRemoveCoupon} className={styles.removeCouponBtn}>
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.couponForm}>
+                  <input
+                    type="text"
+                    placeholder="Enter Coupon Code"
+                    value={couponCodeInput}
+                    onChange={(e) => setCouponCodeInput(e.target.value)}
+                    disabled={validatingCoupon}
+                  />
+                  <button type="button" onClick={handleApplyCoupon} disabled={validatingCoupon || !couponCodeInput.trim()}>
+                    {validatingCoupon ? '...' : 'Apply'}
+                  </button>
+                </div>
+              )}
+              {couponError && <p className={styles.couponError}>{couponError}</p>}
+              {couponSuccess && <p className={styles.couponSuccess}>{couponSuccess}</p>}
+            </div>
+
+            <hr className={styles.divider} />
+
             <div className={styles.row}>
               <span>Subtotal</span>
               <span>₹{getSubtotal()}</span>
             </div>
+
+            {appliedCoupon && (
+              <div className={styles.row} style={{ color: 'var(--accent-neon)' }}>
+                <span>Discount ({appliedCoupon.discountPercentage}%)</span>
+                <span>-₹{getDiscountAmount()}</span>
+              </div>
+            )}
 
             <div className={styles.row}>
               <span>Delivery Charges</span>

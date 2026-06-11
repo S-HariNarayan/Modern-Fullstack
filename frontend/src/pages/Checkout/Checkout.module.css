@@ -208,3 +208,124 @@
   }
 }
 
+/* Coupon Section */
+.divider {
+  border: 0;
+  height: 1px;
+  background: var(--border-glow);
+  margin: 15px 0;
+}
+
+.couponSection {
+  margin: 15px 0;
+}
+
+.couponForm {
+  display: flex;
+  gap: 10px;
+}
+
+.couponForm input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border-glow);
+  border-radius: 8px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 14px;
+}
+
+.couponForm input:focus {
+  border-color: var(--accent-neon);
+  box-shadow: 0 0 5px rgba(162, 255, 134, 0.2);
+}
+
+.couponForm button {
+  padding: 10px 16px;
+  background: var(--accent-green);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 14px;
+}
+
+.couponForm button:hover:not(:disabled) {
+  background: var(--accent-neon);
+  box-shadow: 0 0 8px rgba(162, 255, 134, 0.3);
+}
+
+.couponForm button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.appliedCouponRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(162, 255, 134, 0.08);
+  border: 1px dashed var(--accent-neon);
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.couponInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.couponLabel {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.couponBadge {
+  font-family: monospace;
+  font-weight: bold;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-glow);
+}
+
+.couponDiscount {
+  font-weight: bold;
+  color: var(--accent-neon);
+  font-size: 13px;
+}
+
+.removeCouponBtn {
+  background: none;
+  border: none;
+  color: #ff5252;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.removeCouponBtn:hover {
+  text-decoration: underline;
+}
+
+.couponError {
+  color: #ff5252;
+  font-size: 12px;
+  margin: 6px 0 0 0;
+  font-weight: bold;
+}
+
+.couponSuccess {
+  color: var(--accent-neon);
+  font-size: 12px;
+  margin: 6px 0 0 0;
+  font-weight: bold;
+}
+
+
