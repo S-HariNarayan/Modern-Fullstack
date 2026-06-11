@@ -191,3 +191,47 @@ body[data-theme="dark-neon"] .notificationItem:hover {
     font-size: 20px;
   }
 }
+
+.actionRow {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  display: flex;
+}
+
+.claimBtn {
+  background: var(--accent-green);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
+}
+
+.claimBtn:hover {
+  background: var(--accent-neon);
+  box-shadow: 0 4px 12px rgba(162, 255, 134, 0.4);
+  transform: scale(1.03);
+}
+
+.reviewBtn {
+  background: #ffb300;
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(255, 179, 0, 0.2);
+}
+
+.reviewBtn:hover {
+  background: #ffa000;
+  box-shadow: 0 4px 12px rgba(255, 160, 0, 0.4);
+  transform: scale(1.03);
+}

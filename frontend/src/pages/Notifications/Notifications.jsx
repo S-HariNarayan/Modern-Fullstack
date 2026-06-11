@@ -143,6 +143,37 @@ export default function Notifications() {
                           {!isRead && <span className={styles.unreadDot} />}
                         </div>
                         <p className={styles.notifMessage}>{notif.message}</p>
+                        
+                        {notif.type === 'offer' && (
+                          <div className={styles.actionRow}>
+                            <button
+                              type="button"
+                              className={styles.claimBtn}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMarkAsRead(notif);
+                              }}
+                            >
+                              Claim Offer 🎁
+                            </button>
+                          </div>
+                        )}
+
+                        {notif.type === 'order' && (
+                          <div className={styles.actionRow}>
+                            <button
+                              type="button"
+                              className={styles.reviewBtn}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMarkAsRead(notif);
+                              }}
+                            >
+                              Give Review ⭐
+                            </button>
+                          </div>
+                        )}
+
                         <span className={styles.notifTime}>
                           {new Date(notif.createdAt).toLocaleDateString()} at{' '}
                           {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
